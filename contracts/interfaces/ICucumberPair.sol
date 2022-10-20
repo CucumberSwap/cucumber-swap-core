@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0;
+pragma solidity =0.5.16;
 
 interface ICucumberPair {
     event Approval(address indexed owner, address indexed spender, uint value);

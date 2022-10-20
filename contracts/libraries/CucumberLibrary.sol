@@ -1,5 +1,4 @@
-pragma solidity >=0.5.0;
-
+pragma solidity =0.5.16;
 import './contracts/interfaces/ICucumberPair.sol';
 
 import "./SafeMath.sol";
