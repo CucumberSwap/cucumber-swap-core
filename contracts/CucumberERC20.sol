@@ -1,7 +1,7 @@
 pragma solidity =0.5.16;
 
-import './interfaces/ICucumberERC20.sol';
-import './libraries/SafeMath.sol';
+import './contracts/interfaces/ICucumberERC20.sol';
+import './contracts/libraries/SafeMath.sol';
 
 contract CucumberERC20 is ICucumberERC20 {
     using SafeMath for uint;

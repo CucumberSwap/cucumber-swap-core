@@ -1,7 +1,8 @@
 pragma solidity =0.5.16;
+
 import './contracts/interfaces/ICucumberPair.sol';
 
-import "./SafeMath.sol";
+import "SafeMath.sol";
 
 library CucumberLibrary {
     using SafeMath for uint;

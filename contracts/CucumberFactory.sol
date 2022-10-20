@@ -1,10 +1,10 @@
 pragma solidity =0.5.16;
 
 import './interfaces/ICucumberFactory.sol';
-import './CucumberPair.sol';
+import './ICucumberPair.sol';
 
 contract CucumberFactory is ICucumberFactory {
-    bytes32 public constant INIT_CODE_PAIR_HASH = keccak256(abi.encodePacked(type(CucumberPair).creationCode));
+    bytes32 public constant INIT_CODE_PAIR_HASH = keccak256(abi.encodePacked(type(ICucumberPair).creationCode));
 
     address public feeTo;
     address public feeToSetter;

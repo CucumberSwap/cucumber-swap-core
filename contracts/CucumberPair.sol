@@ -1,12 +1,12 @@
 pragma solidity =0.5.16;
 
-import './interfaces/ICucumberPair.sol';
-import './CucumberERC20.sol';
-import './libraries/Math.sol';
-import './libraries/UQ112x112.sol';
-import './interfaces/IERC20.sol';
-import './interfaces/ICucumberFactory.sol';
-import './interfaces/ICucumberCallee.sol';
+import './contracts/interfaces/ICucumberPair.sol';
+import 'CucumberERC20.sol';
+import './contracts/libraries/Math.sol';
+import './contracts/libraries/UQ112x112.sol';
+import './contracts/interfaces/IERC20.sol';
+import './contracts/interfaces/ICucumberFactory.sol';
+import './contracts/interfaces/ICucumberCallee.sol';
 
 contract CucumberPair is ICucumberPair, CucumberERC20 {
     using SafeMath  for uint;
@@ -118,7 +118,7 @@ contract CucumberPair is ICucumberPair, CucumberERC20 {
         uint _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
         if (_totalSupply == 0) {
             liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
-           _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
+            _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
         } else {
             liquidity = Math.min(amount0.mul(_totalSupply) / _reserve0, amount1.mul(_totalSupply) / _reserve1);
         }
@@ -164,22 +164,22 @@ contract CucumberPair is ICucumberPair, CucumberERC20 {
         uint balance0;
         uint balance1;
         { // scope for _token{0,1}, avoids stack too deep errors
-        address _token0 = token0;
-        address _token1 = token1;
-        require(to != _token0 && to != _token1, 'Cucumber: INVALID_TO');
-        if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
-        if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
-        if (data.length > 0) ICucumberCallee(to).cucumberCall(msg.sender, amount0Out, amount1Out, data);
-        balance0 = IERC20(_token0).balanceOf(address(this));
-        balance1 = IERC20(_token1).balanceOf(address(this));
+            address _token0 = token0;
+            address _token1 = token1;
+            require(to != _token0 && to != _token1, 'Cucumber: INVALID_TO');
+            if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
+            if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
+            if (data.length > 0) ICucumberCallee(to).cucumberCall(msg.sender, amount0Out, amount1Out, data);
+            balance0 = IERC20(_token0).balanceOf(address(this));
+            balance1 = IERC20(_token1).balanceOf(address(this));
         }
         uint amount0In = balance0 > _reserve0 - amount0Out ? balance0 - (_reserve0 - amount0Out) : 0;
         uint amount1In = balance1 > _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;
         require(amount0In > 0 || amount1In > 0, 'Cucumber: INSUFFICIENT_INPUT_AMOUNT');
         { // scope for reserve{0,1}Adjusted, avoids stack too deep errors
-        uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(2));
-        uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(2));
-        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'Cucumber: K');
+            uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(2));
+            uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(2));
+            require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'Cucumber: K');
         }
 
         _update(balance0, balance1, _reserve0, _reserve1);
