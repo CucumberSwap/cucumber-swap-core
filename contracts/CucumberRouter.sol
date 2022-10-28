@@ -5,19 +5,19 @@ import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
 import "./interfaces/ICucumberRouter02.sol";
 import "./interfaces/ICucumberFactory.sol";
-import "./libraries/PancakeLibrary.sol";
+import "./libraries/CucumberLibrary.sol";
 import "./libraries/SafeMath.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IWETH.sol";
 
-contract PancakeRouter is ICucumberRouter02 {
+contract CucumberRouter is ICucumberRouter02 {
     using SafeMath for uint256;
 
     address public immutable override factory;
     address public immutable override WETH;
 
     modifier ensure(uint256 deadline) {
-        require(deadline >= block.timestamp, "PancakeRouter: EXPIRED");
+        require(deadline >= block.timestamp, "CucumberRouter: EXPIRED");
         _;
     }
 
@@ -49,12 +49,12 @@ contract PancakeRouter is ICucumberRouter02 {
         } else {
             uint256 amountBOptimal = PancakeLibrary.quote(amountADesired, reserveA, reserveB);
             if (amountBOptimal <= amountBDesired) {
-                require(amountBOptimal >= amountBMin, "PancakeRouter: INSUFFICIENT_B_AMOUNT");
+                require(amountBOptimal >= amountBMin, "CucumberRouter: INSUFFICIENT_B_AMOUNT");
                 (amountA, amountB) = (amountADesired, amountBOptimal);
             } else {
                 uint256 amountAOptimal = PancakeLibrary.quote(amountBDesired, reserveB, reserveA);
                 assert(amountAOptimal <= amountADesired);
-                require(amountAOptimal >= amountAMin, "PancakeRouter: INSUFFICIENT_A_AMOUNT");
+                require(amountAOptimal >= amountAMin, "CucumberRouter: INSUFFICIENT_A_AMOUNT");
                 (amountA, amountB) = (amountAOptimal, amountBDesired);
             }
         }
@@ -138,8 +138,8 @@ contract PancakeRouter is ICucumberRouter02 {
         (uint256 amount0, uint256 amount1) = IPancakePair(pair).burn(to);
         (address token0, ) = PancakeLibrary.sortTokens(tokenA, tokenB);
         (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
-        require(amountA >= amountAMin, "PancakeRouter: INSUFFICIENT_A_AMOUNT");
-        require(amountB >= amountBMin, "PancakeRouter: INSUFFICIENT_B_AMOUNT");
+        require(amountA >= amountAMin, "CucumberRouter: INSUFFICIENT_A_AMOUNT");
+        require(amountB >= amountBMin, "CucumberRouter: INSUFFICIENT_B_AMOUNT");
     }
 
     function removeLiquidityETH(
@@ -267,7 +267,7 @@ contract PancakeRouter is ICucumberRouter02 {
         uint256 deadline
     ) external virtual override ensure(deadline) returns (uint256[] memory amounts) {
         amounts = PancakeLibrary.getAmountsOut(factory, amountIn, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(amounts[amounts.length - 1] >= amountOutMin, "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
@@ -285,7 +285,7 @@ contract PancakeRouter is ICucumberRouter02 {
         uint256 deadline
     ) external virtual override ensure(deadline) returns (uint256[] memory amounts) {
         amounts = PancakeLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= amountInMax, "PancakeRouter: EXCESSIVE_INPUT_AMOUNT");
+        require(amounts[0] <= amountInMax, "CucumberRouter: EXCESSIVE_INPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
@@ -301,9 +301,9 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external payable virtual override ensure(deadline) returns (uint256[] memory amounts) {
-        require(path[0] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[0] == WETH, "CucumberRouter: INVALID_PATH");
         amounts = PancakeLibrary.getAmountsOut(factory, msg.value, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(amounts[amounts.length - 1] >= amountOutMin, "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT");
         IWETH(WETH).deposit{value: amounts[0]}();
         assert(IWETH(WETH).transfer(PancakeLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
         _swap(amounts, path, to);
@@ -316,9 +316,9 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external virtual override ensure(deadline) returns (uint256[] memory amounts) {
-        require(path[path.length - 1] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[path.length - 1] == WETH, "CucumberRouter: INVALID_PATH");
         amounts = PancakeLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= amountInMax, "PancakeRouter: EXCESSIVE_INPUT_AMOUNT");
+        require(amounts[0] <= amountInMax, "CucumberRouter: EXCESSIVE_INPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
@@ -337,9 +337,9 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external virtual override ensure(deadline) returns (uint256[] memory amounts) {
-        require(path[path.length - 1] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[path.length - 1] == WETH, "CucumberRouter: INVALID_PATH");
         amounts = PancakeLibrary.getAmountsOut(factory, amountIn, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(amounts[amounts.length - 1] >= amountOutMin, "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
@@ -357,9 +357,9 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external payable virtual override ensure(deadline) returns (uint256[] memory amounts) {
-        require(path[0] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[0] == WETH, "CucumberRouter: INVALID_PATH");
         amounts = PancakeLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= msg.value, "PancakeRouter: EXCESSIVE_INPUT_AMOUNT");
+        require(amounts[0] <= msg.value, "CucumberRouter: EXCESSIVE_INPUT_AMOUNT");
         IWETH(WETH).deposit{value: amounts[0]}();
         assert(IWETH(WETH).transfer(PancakeLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
         _swap(amounts, path, to);
@@ -408,7 +408,7 @@ contract PancakeRouter is ICucumberRouter02 {
         _swapSupportingFeeOnTransferTokens(path, to);
         require(
             IERC20(path[path.length - 1]).balanceOf(to).sub(balanceBefore) >= amountOutMin,
-            "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT"
+            "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT"
         );
     }
 
@@ -418,7 +418,7 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external payable virtual override ensure(deadline) {
-        require(path[0] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[0] == WETH, "CucumberRouter: INVALID_PATH");
         uint256 amountIn = msg.value;
         IWETH(WETH).deposit{value: amountIn}();
         assert(IWETH(WETH).transfer(PancakeLibrary.pairFor(factory, path[0], path[1]), amountIn));
@@ -426,7 +426,7 @@ contract PancakeRouter is ICucumberRouter02 {
         _swapSupportingFeeOnTransferTokens(path, to);
         require(
             IERC20(path[path.length - 1]).balanceOf(to).sub(balanceBefore) >= amountOutMin,
-            "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT"
+            "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT"
         );
     }
 
@@ -437,7 +437,7 @@ contract PancakeRouter is ICucumberRouter02 {
         address to,
         uint256 deadline
     ) external virtual override ensure(deadline) {
-        require(path[path.length - 1] == WETH, "PancakeRouter: INVALID_PATH");
+        require(path[path.length - 1] == WETH, "CucumberRouter: INVALID_PATH");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
@@ -446,7 +446,7 @@ contract PancakeRouter is ICucumberRouter02 {
         );
         _swapSupportingFeeOnTransferTokens(path, address(this));
         uint256 amountOut = IERC20(WETH).balanceOf(address(this));
-        require(amountOut >= amountOutMin, "PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(amountOut >= amountOutMin, "CucumberRouter: INSUFFICIENT_OUTPUT_AMOUNT");
         IWETH(WETH).withdraw(amountOut);
         TransferHelper.safeTransferETH(to, amountOut);
     }
