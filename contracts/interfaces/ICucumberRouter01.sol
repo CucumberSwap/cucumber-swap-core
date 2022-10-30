@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.6.2;
 
-interface ICucumberRouter01 {
+interface IPancakeRouter01 {
     function factory() external pure returns (address);
 
     function WETH() external pure returns (address);

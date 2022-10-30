@@ -3,7 +3,7 @@ pragma solidity >=0.6.2;
 
 import "./ICucumberRouter01.sol";
 
-interface ICucumberRouter02 is ICucumberRouter01 {
+interface IPancakeRouter02 is IPancakeRouter01 {
     function removeLiquidityETHSupportingFeeOnTransferTokens(
         address token,
         uint256 liquidity,
