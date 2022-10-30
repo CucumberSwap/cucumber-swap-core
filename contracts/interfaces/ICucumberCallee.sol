@@ -2,7 +2,7 @@
 pragma solidity >=0.5.0;
 
 interface ICucumberCallee {
-    function pancakeCall(
+    function cucumberCall(
         address sender,
         uint256 amount0,
         uint256 amount1,
